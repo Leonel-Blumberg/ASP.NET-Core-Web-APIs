@@ -1,0 +1,299 @@
+@RecetasAPI_HostAddress = http://localhost:5260
+
+### ---------- CATEGORIAS ----------
+
+### Crear una categoria
+POST {{RecetasAPI_HostAddress}}/api/categorias
+Content-Type: application/json
+
+{
+  "nombre": "Postres"
+}
+
+### Crear otra categoria
+POST {{RecetasAPI_HostAddress}}/api/categorias
+Content-Type: application/json
+
+{
+  "nombre": "Ensaladas"
+}
+
+### FALLA 400 - el nombre no empieza con mayuscula
+POST {{RecetasAPI_HostAddress}}/api/categorias
+Content-Type: application/json
+
+{
+  "nombre": "postres"
+}
+
+### FALLA 400 - el nombre pasa los 50 caracteres
+POST {{RecetasAPI_HostAddress}}/api/categorias
+Content-Type: application/json
+
+{
+  "nombre": "Postres caseros de la abuela con muchas frutas y crema batida"
+}
+
+### Listado de categorias
+GET {{RecetasAPI_HostAddress}}/api/categorias
+
+### Categoria por id
+GET {{RecetasAPI_HostAddress}}/api/categorias/1
+
+### Categoria por id, con sus recetas incluidas
+GET {{RecetasAPI_HostAddress}}/api/categorias/1?incluirRecetas=true
+
+### Categoria por texto
+GET {{RecetasAPI_HostAddress}}/api/categorias/Post
+
+### FALLA 404 - la categoria no existe
+GET {{RecetasAPI_HostAddress}}/api/categorias/999
+
+### Modificar una categoria
+PUT {{RecetasAPI_HostAddress}}/api/categorias/2
+Content-Type: application/json
+
+{
+  "id": 2,
+  "nombre": "Ensaladas frescas"
+}
+
+### FALLA 400 - la id de la ruta no coincide con la del cuerpo
+PUT {{RecetasAPI_HostAddress}}/api/categorias/2
+Content-Type: application/json
+
+{
+  "id": 99,
+  "nombre": "Ensaladas frescas"
+}
+
+### ---------- RECETAS ----------
+
+### Crear una receta
+POST {{RecetasAPI_HostAddress}}/api/recetas
+Content-Type: application/json
+
+{
+  "titulo": "Tarta de manzana",
+  "tiempoTotalMinutos": 90,
+  "tiempoCoccionMinutos": 45,
+  "vegetariana": true,
+  "categoriaId": 1
+}
+
+### Crear otra receta
+POST {{RecetasAPI_HostAddress}}/api/recetas
+Content-Type: application/json
+
+{
+  "titulo": "Ensalada cesar",
+  "tiempoTotalMinutos": 15,
+  "tiempoCoccionMinutos": 0,
+  "vegetariana": false,
+  "categoriaId": 2
+}
+
+### FALLA 400 - la categoria no existe en la base
+POST {{RecetasAPI_HostAddress}}/api/recetas
+Content-Type: application/json
+
+{
+  "titulo": "Receta sin categoria",
+  "tiempoTotalMinutos": 30,
+  "tiempoCoccionMinutos": 10,
+  "vegetariana": false,
+  "categoriaId": 999
+}
+
+### FALLA 400 - la coccion es mayor que el tiempo total
+POST {{RecetasAPI_HostAddress}}/api/recetas
+Content-Type: application/json
+
+{
+  "titulo": "Guiso eterno",
+  "tiempoTotalMinutos": 20,
+  "tiempoCoccionMinutos": 60,
+  "vegetariana": false,
+  "categoriaId": 1
+}
+
+### FALLA 400 - el titulo no empieza con mayuscula
+POST {{RecetasAPI_HostAddress}}/api/recetas
+Content-Type: application/json
+
+{
+  "titulo": "flan casero",
+  "tiempoTotalMinutos": 60,
+  "tiempoCoccionMinutos": 40,
+  "vegetariana": true,
+  "categoriaId": 1
+}
+
+### FALLA 400 - el tiempo total es 0
+POST {{RecetasAPI_HostAddress}}/api/recetas
+Content-Type: application/json
+
+{
+  "titulo": "Receta instantanea",
+  "tiempoTotalMinutos": 0,
+  "tiempoCoccionMinutos": 0,
+  "vegetariana": true,
+  "categoriaId": 1
+}
+
+### FALLA 400 - falta el titulo
+POST {{RecetasAPI_HostAddress}}/api/recetas
+Content-Type: application/json
+
+{
+  "tiempoTotalMinutos": 30,
+  "tiempoCoccionMinutos": 10,
+  "vegetariana": true,
+  "categoriaId": 1
+}
+
+### Listado de recetas
+GET {{RecetasAPI_HostAddress}}/api/recetas
+
+### Receta por id
+GET {{RecetasAPI_HostAddress}}/api/recetas/1
+
+### Receta por id, con la categoria incluida
+GET {{RecetasAPI_HostAddress}}/api/recetas/1?incluirCategoria=true
+
+### FALLA 404 - la receta no existe
+GET {{RecetasAPI_HostAddress}}/api/recetas/999
+
+### Receta por titulo (el espacio va como %20)
+GET {{RecetasAPI_HostAddress}}/api/recetas/Tarta%20de%20manzana
+
+### Receta por titulo, solo las vegetarianas
+GET {{RecetasAPI_HostAddress}}/api/recetas/a
+solo-vegetarianas: true
+
+### Modificar una receta
+PUT {{RecetasAPI_HostAddress}}/api/recetas/1
+Content-Type: application/json
+
+{
+  "id": 1,
+  "titulo": "Tarta de manzana y canela",
+  "tiempoTotalMinutos": 100,
+  "tiempoCoccionMinutos": 50,
+  "vegetariana": true,
+  "categoriaId": 1
+}
+
+### FALLA 400 - la id de la ruta no coincide con la del cuerpo
+PUT {{RecetasAPI_HostAddress}}/api/recetas/1
+Content-Type: application/json
+
+{
+  "id": 99,
+  "titulo": "Tarta de manzana y canela",
+  "tiempoTotalMinutos": 100,
+  "tiempoCoccionMinutos": 50,
+  "vegetariana": true,
+  "categoriaId": 1
+}
+
+### FALLA 404 - la receta a modificar no existe
+PUT {{RecetasAPI_HostAddress}}/api/recetas/999
+Content-Type: application/json
+
+{
+  "id": 999,
+  "titulo": "Receta fantasma",
+  "tiempoTotalMinutos": 30,
+  "tiempoCoccionMinutos": 10,
+  "vegetariana": true,
+  "categoriaId": 1
+}
+
+### Eliminar una receta
+DELETE {{RecetasAPI_HostAddress}}/api/recetas/2
+
+### FALLA 404 - la receta a eliminar no existe
+DELETE {{RecetasAPI_HostAddress}}/api/recetas/999
+
+### ---------- COMENTARIOS (en memoria) ----------
+
+### Crear un comentario
+POST {{RecetasAPI_HostAddress}}/api/comentarios
+Content-Type: application/json
+
+{
+  "recetaId": 1,
+  "texto": "Quedo riquisima, la volveria a hacer."
+}
+
+### Crear otro comentario
+POST {{RecetasAPI_HostAddress}}/api/comentarios
+Content-Type: application/json
+
+{
+  "recetaId": 1,
+  "texto": "Le pondria menos azucar."
+}
+
+### FALLA 400 - el texto no empieza con mayuscula
+POST {{RecetasAPI_HostAddress}}/api/comentarios
+Content-Type: application/json
+
+{
+  "recetaId": 1,
+  "texto": "quedo riquisima."
+}
+
+### Listado de comentarios (sobrevive entre peticiones)
+GET {{RecetasAPI_HostAddress}}/api/comentarios
+
+### Comentario por id
+GET {{RecetasAPI_HostAddress}}/api/comentarios/1
+
+### FALLA 404 - el comentario no existe
+GET {{RecetasAPI_HostAddress}}/api/comentarios/999
+
+### Comentarios por texto
+GET {{RecetasAPI_HostAddress}}/api/comentarios/azucar
+
+### Modificar un comentario
+PUT {{RecetasAPI_HostAddress}}/api/comentarios/1
+Content-Type: application/json
+
+{
+  "id": 1,
+  "recetaId": 1,
+  "texto": "Quedo bien, pero tarda mas de lo que dice."
+}
+
+### FALLA 404 - el comentario a modificar no existe
+PUT {{RecetasAPI_HostAddress}}/api/comentarios/999
+Content-Type: application/json
+
+{
+  "id": 999,
+  "recetaId": 1,
+  "texto": "Comentario fantasma."
+}
+
+### Eliminar un comentario
+DELETE {{RecetasAPI_HostAddress}}/api/comentarios/2
+
+### FALLA 404 - el comentario a eliminar no existe
+DELETE {{RecetasAPI_HostAddress}}/api/comentarios/999
+
+### ---------- TIEMPOS DE VIDA ----------
+
+### Los dos Transient dan guids distintos, los dos Scoped el mismo,
+### y el Singleton repite el mismo guid en todas las peticiones.
+GET {{RecetasAPI_HostAddress}}/api/tiempos-de-vida
+
+### Repetir para ver que solo el Singleton mantiene su guid
+GET {{RecetasAPI_HostAddress}}/api/tiempos-de-vida
+
+### ---------- MANTENIMIENTO ----------
+
+### Con "Mantenimiento": true en appsettings.json, todo /api devuelve 503.
+### Fuera de /api el middleware deja pasar.
+GET {{RecetasAPI_HostAddress}}/api/recetas

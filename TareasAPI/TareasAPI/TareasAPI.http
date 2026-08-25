@@ -1,0 +1,209 @@
+@host = https://localhost:7059
+
+### ---------- LISTAS ----------
+
+### 1. Crear lista válida - 201 Created + cabecera Location
+POST {{host}}/api/listas
+Content-Type: application/json
+
+{ "nombre": "Compras" }
+
+### 2. Crear otra lista - 201
+POST {{host}}/api/listas
+Content-Type: application/json
+
+{ "nombre": "Trabajo" }
+
+### 3. Nombre en minúscula - 400 (atributo PrimeraLetraMayuscula)
+POST {{host}}/api/listas
+Content-Type: application/json
+
+{ "nombre": "compras" }
+
+### 4. Nombre de más de 50 caracteres - 400 (StringLength)
+POST {{host}}/api/listas
+Content-Type: application/json
+
+{ "nombre": "Esta es una lista con un nombre absurdamente largo que supera el limite" }
+
+### 5. Sin nombre - 400 (Required)
+POST {{host}}/api/listas
+Content-Type: application/json
+
+{ }
+
+### 6. Listado completo - 200
+GET {{host}}/api/listas
+
+### 7. Por id - 200 con sus tareas
+GET {{host}}/api/listas/1
+
+### 8. Id inexistente - 404 + LogWarning
+GET {{host}}/api/listas/999
+
+### 9. Búsqueda por nombre (ruta alpha) - 200, array (vacío si no hay match)
+GET {{host}}/api/listas/Com
+
+### 10. Modificar - 200
+PUT {{host}}/api/listas/1
+Content-Type: application/json
+
+{ "id": 1, "nombre": "Supermercado" }
+
+### 11. Ids que no coinciden - 400 con el error colgado de "id"
+PUT {{host}}/api/listas/1
+Content-Type: application/json
+
+{ "id": 2, "nombre": "Supermercado" }
+
+### 12. Modificar inexistente - 404
+PUT {{host}}/api/listas/999
+Content-Type: application/json
+
+{ "id": 999, "nombre": "Fantasma" }
+
+
+### ---------- TAREAS ----------
+
+### 13. Crear tarea válida - 201 Created + cabecera Location
+POST {{host}}/api/tareas
+Content-Type: application/json
+
+{ "titulo": "Comprar leche", "fechaInicio": "2026-08-20", "fechaFin": "2026-08-25", "completada": false, "listaId": 1 }
+
+### 14. Otra tarea, completada - 201
+POST {{host}}/api/tareas
+Content-Type: application/json
+
+{ "titulo": "Pagar la luz", "fechaInicio": "2026-08-01", "fechaFin": "2026-08-05", "completada": true, "listaId": 1 }
+
+### 15. FechaFin anterior a FechaInicio - 400 (IValidatableObject)
+POST {{host}}/api/tareas
+Content-Type: application/json
+
+{ "titulo": "Viajar", "fechaInicio": "2026-08-25", "fechaFin": "2026-08-20", "listaId": 1 }
+
+### 16. ListaId inexistente - 400 (validación contra la base)
+POST {{host}}/api/tareas
+Content-Type: application/json
+
+{ "titulo": "Huerfana", "fechaInicio": "2026-08-20", "fechaFin": "2026-08-25", "listaId": 999 }
+
+### 17. Título en minúscula - 400
+POST {{host}}/api/tareas
+Content-Type: application/json
+
+{ "titulo": "comprar pan", "fechaInicio": "2026-08-20", "fechaFin": "2026-08-25", "listaId": 1 }
+
+### 18. Sin fechas - 400 (required)
+POST {{host}}/api/tareas
+Content-Type: application/json
+
+{ "titulo": "Sin fechas", "listaId": 1 }
+
+### 19. Listado sin filtros - 200, todas
+GET {{host}}/api/tareas
+
+### 20. Filtro por completadas - 200, solo las completadas
+GET {{host}}/api/tareas?completadas=true
+
+### 21. Filtro por lista - 200
+GET {{host}}/api/tareas?listaId=1
+
+### 22. Los dos filtros juntos (se combinan con AND) - 200
+GET {{host}}/api/tareas?completadas=false&listaId=1
+
+### 23. Por id con la lista incluida - 200, viene "lista" en el JSON
+GET {{host}}/api/tareas/1
+incluir-lista: true
+
+### 24. Por id sin la lista - 200, "lista" viene en null
+GET {{host}}/api/tareas/1
+incluir-lista: false
+
+### 25. Id inexistente - 404
+GET {{host}}/api/tareas/999
+
+### 26. Búsqueda por título - 200
+GET {{host}}/api/tareas/Comprar
+
+### 27. Modificar - 200
+PUT {{host}}/api/tareas/1
+Content-Type: application/json
+
+{ "id": 1, "titulo": "Comprar leche y pan", "fechaInicio": "2026-08-20", "fechaFin": "2026-08-26", "completada": true, "listaId": 1 }
+
+### 28. Borrar inexistente - 404
+DELETE {{host}}/api/tareas/999
+
+
+### ---------- NOTAS (en memoria) ----------
+
+### 29. Crear nota - 201 Created + cabecera Location
+POST {{host}}/api/notas
+Content-Type: application/json
+
+{ "tareaId": 1, "texto": "Preferir la marca del super" }
+
+### 30. Otra nota para la misma tarea - 201
+POST {{host}}/api/notas
+Content-Type: application/json
+
+{ "tareaId": 1, "texto": "Comprar dos" }
+
+### 31. TareaId inexistente - 400
+POST {{host}}/api/notas
+Content-Type: application/json
+
+{ "tareaId": 999, "texto": "Huerfana" }
+
+### 32. Texto en minúscula - 400
+POST {{host}}/api/notas
+Content-Type: application/json
+
+{ "tareaId": 1, "texto": "en minuscula" }
+
+### 33. Listado - 200. Repetir para ver que los datos sobreviven porque es Singleton
+GET {{host}}/api/notas
+
+### 34. Por id - 200
+GET {{host}}/api/notas/1
+
+### 35. Id inexistente - 404
+GET {{host}}/api/notas/999
+
+### 36. Notas de una tarea - 200
+GET {{host}}/api/notas/nota-tarea/1
+
+### 37. Modificar - 200
+PUT {{host}}/api/notas/1
+Content-Type: application/json
+
+{ "id": 1, "tareaId": 1, "texto": "Marca del super, la grande" }
+
+### 38. Borrar - 200
+DELETE {{host}}/api/notas/2
+
+### 39. Borrar de nuevo la misma - 404
+DELETE {{host}}/api/notas/2
+
+
+### ---------- TIEMPOS DE VIDA ----------
+
+### 40. Los dos Transient dan guids distintos, los dos Scoped el mismo,
+### y el Singleton repite el mismo guid en todas las peticiones.
+### Repetir la petición para verlo.
+GET {{host}}/api/tiempos-de-vida
+
+
+### ---------- MANTENIMIENTO ----------
+
+### 41. Con "Mantenimiento": true en appsettings.json y la app reiniciada - 503
+GET {{host}}/api/listas
+
+### 42. Ruta fuera de /api con mantenimiento activo - no la corta, da 404 de ruta y no 503
+GET {{host}}/otra-cosa
+
+### El cronómetro no se prueba desde acá. Cada petición deja una línea en la
+### consola de la app con método, ruta, status code y milisegundos, hasta las
+### que corta el de mantenimiento.
