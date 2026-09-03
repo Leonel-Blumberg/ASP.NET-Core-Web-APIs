@@ -1,7 +1,7 @@
-using GimnasioAPI2.DTOs.ClaseInstructor;
-using GimnasioAPI2.DTOs.Disciplina;
+using GimnasioAPI.DTOs.ClaseInstructor;
+using GimnasioAPI.DTOs.Disciplina;
 
-namespace GimnasioAPI2.DTOs.Clase
+namespace GimnasioAPI.DTOs.Clase
 {
     public class ClaseConHijosDTO : ClaseDTO
     {

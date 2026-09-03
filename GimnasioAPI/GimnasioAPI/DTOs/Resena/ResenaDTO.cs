@@ -1,4 +1,4 @@
-﻿namespace GimnasioAPI2.DTOs.Resena
+﻿namespace GimnasioAPI.DTOs.Resena
 {
     public class ResenaDTO
     {

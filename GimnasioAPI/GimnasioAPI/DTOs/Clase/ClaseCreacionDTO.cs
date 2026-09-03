@@ -1,6 +1,6 @@
-using GimnasioAPI2.DTOs.ClaseInstructor;
+using GimnasioAPI.DTOs.ClaseInstructor;
 
-namespace GimnasioAPI2.DTOs.Clase
+namespace GimnasioAPI.DTOs.Clase
 {
     public class ClaseCreacionDTO : ClasePatchDTO
     {

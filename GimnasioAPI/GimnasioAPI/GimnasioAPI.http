@@ -1,0 +1,220 @@
+@GimnasioAPI_HostAddress = http://localhost:5278
+
+### ---------- Disciplinas ----------
+
+### Crear una disciplina
+POST {{GimnasioAPI_HostAddress}}/api/disciplinas
+Content-Type: application/json
+
+{
+    "nombre": "Yoga"
+}
+
+### Crear otra disciplina
+POST {{GimnasioAPI_HostAddress}}/api/disciplinas
+Content-Type: application/json
+
+{
+    "nombre": "Boxeo"
+}
+
+### FALLA 400 - Rechazar la petición porque el nombre no comienza con mayúscula
+POST {{GimnasioAPI_HostAddress}}/api/disciplinas
+Content-Type: application/json
+
+{
+    "nombre": "yoga"
+}
+
+### FALLA 400 - Rechazar la petición porque el nombre supera el MaxLength
+
+POST {{GimnasioAPI_HostAddress}}/api/disciplinas
+Content-Type: application/json
+
+{
+    "nombre": "Disciplina con más de 50 caracteres para probar la API."
+}
+
+### FALLA 400 - Rechazar la petición porque el body esta vacío
+
+POST {{GimnasioAPI_HostAddress}}/api/disciplinas
+Content-Type: application/json
+
+{
+
+}
+
+### Leer las disciplinas
+GET {{GimnasioAPI_HostAddress}}/api/disciplinas
+
+### Leer las disciplinas por id
+GET {{GimnasioAPI_HostAddress}}/api/disciplinas/1
+
+### FALLA 404 - No se encuentra la id
+GET {{GimnasioAPI_HostAddress}}/api/disciplinas/999
+
+### Modificar una disciplina entera
+PUT {{GimnasioAPI_HostAddress}}/api/disciplinas/2
+Content-Type: application/json
+
+{
+    "nombre": "CrossFit"
+}
+
+### FALLA 404 - No se encuentra la id
+PUT {{GimnasioAPI_HostAddress}}/api/disciplinas/999
+Content-Type: application/json
+
+{
+    "nombre": "Cardio"
+}
+
+### Modificar una disciplina parcialmente
+PATCH {{GimnasioAPI_HostAddress}}/api/disciplinas/1
+Content-Type: application/json-patch+json
+
+[
+    { "op": "replace", "path": "/nombre", "value": "Yoga suave"}
+]
+
+### FALLA 400 - Rechazar la petición porque el nombre no comienza con mayúscula
+PATCH {{GimnasioAPI_HostAddress}}/api/disciplinas/1
+Content-Type: application/json-patch+json
+
+[
+    { "op": "replace", "path": "/nombre", "value": "yoga suave"}
+]
+
+### FALLA 400 - Rechazar la petición porque la propiedad no existe
+PATCH {{GimnasioAPI_HostAddress}}/api/disciplinas/1
+Content-Type: application/json-patch+json
+
+[
+    { "op": "replace", "path": "/color", "value": "Azul"}
+]
+
+### FALLA 404 - No se encuentra la id
+PATCH {{GimnasioAPI_HostAddress}}/api/disciplinas/999
+Content-Type: application/json-patch+json
+
+[
+    { "op": "replace", "path": "/nombre", "value": "Pilates"}
+]
+
+### Borrar una disciplina
+DELETE {{GimnasioAPI_HostAddress}}/api/disciplinas/1
+
+### FALLA 404 - No se encuentra la id
+DELETE {{GimnasioAPI_HostAddress}}/api/disciplinas/999
+
+### ---------- Instructores ----------
+
+### Crear un instructor
+POST {{GimnasioAPI_HostAddress}}/api/instructores
+Content-Type: application/json
+
+{
+    "nombres": "Carlos",
+    "apellidos": "Gomez"
+}
+
+### Crear otro instructor
+POST {{GimnasioAPI_HostAddress}}/api/instructores
+Content-Type: application/json
+
+{
+    "nombres": "María",
+    "apellidos": "Fernández"
+}
+
+### FALLA 400 - Rechazar la petición porque el nombre no comienza con mayúscula
+POST {{GimnasioAPI_HostAddress}}/api/instructores
+Content-Type: application/json
+
+{
+    "nombres": "joaquin",
+    "apellidos": "rodriguez"
+}
+
+### Leer los instructores
+GET {{GimnasioAPI_HostAddress}}/api/instructores
+
+### Leer los instructores por id
+GET {{GimnasioAPI_HostAddress}}/api/instructores/1
+
+### FALLA 404 - No se encuentra la id
+GET {{GimnasioAPI_HostAddress}}/api/instructores/999
+
+### Modificar un instructor entero
+PUT {{GimnasioAPI_HostAddress}}/api/instructores/2
+Content-Type: application/json
+
+{
+    "nombres": "Miguel",
+    "apellidos": "Santos"
+}
+
+### FALLA 404 - No se encuentra la id
+PUT {{GimnasioAPI_HostAddress}}/api/instructores/999
+Content-Type: application/json
+
+{
+    "nombres": "Manuel",
+    "apellidos": "Martinez"
+}
+
+### Modificar un instructor parcialmente
+PATCH {{GimnasioAPI_HostAddress}}/api/instructores/1
+Content-Type: application/json-patch+json
+
+[
+    { "op": "replace", "path": "/nombres", "value": "Roberto"}
+]
+
+### FALLA 400 - Rechazar la petición porque nombres no comienza con mayúscula
+PATCH {{GimnasioAPI_HostAddress}}/api/instructores/1
+Content-Type: application/json-patch+json
+
+[
+    { "op": "replace", "path": "/nombres", "value": "roberto"}
+]
+
+### Comprobar que el patch conservo el apellido guardado
+GET {{GimnasioAPI_HostAddress}}/api/instructores/1
+
+### ---------- Instructores-Colección ----------
+
+### Leer una colección de instructores
+GET {{GimnasioAPI_HostAddress}}/api/instructores-coleccion/1,2
+
+### Leer una colección de instructores aunque haya una id repetida
+GET {{GimnasioAPI_HostAddress}}/api/instructores-coleccion/1,1,2
+
+### FALLA 404 - No se encuentra una id
+GET {{GimnasioAPI_HostAddress}}/api/instructores-coleccion/1,999
+
+### FALLA 400 - Ningún id válido
+GET {{GimnasioAPI_HostAddress}}/api/instructores-coleccion/abc
+
+### Crear una colección de instructores
+POST {{GimnasioAPI_HostAddress}}/api/instructores-coleccion
+Content-Type: application/json
+
+[
+  { "nombres": "Ana", "apellidos": "Perez" },
+  { "nombres": "Luis", "apellidos": "Diaz" }
+]
+
+### FALLA 400 - Rechazar la petición porque debe haber al menos un instructor
+POST {{GimnasioAPI_HostAddress}}/api/instructores-coleccion
+Content-Type: application/json
+
+[
+
+]
+
+### Borrar un instructor
+DELETE {{GimnasioAPI_HostAddress}}/api/instructores/2
+
+### FALLA 404 - No se encuentra la id
+DELETE {{GimnasioAPI_HostAddress}}/api/instructores/999

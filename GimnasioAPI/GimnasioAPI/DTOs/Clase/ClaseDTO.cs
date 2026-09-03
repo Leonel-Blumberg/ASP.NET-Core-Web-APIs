@@ -1,4 +1,4 @@
-﻿namespace GimnasioAPI2.DTOs.Clase
+﻿namespace GimnasioAPI.DTOs.Clase
 {
     public class ClaseDTO
     {

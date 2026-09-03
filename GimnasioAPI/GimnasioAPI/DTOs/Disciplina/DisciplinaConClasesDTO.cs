@@ -1,6 +1,6 @@
-﻿using GimnasioAPI2.DTOs.Clase;
+﻿using GimnasioAPI.DTOs.Clase;
 
-namespace GimnasioAPI2.DTOs.Disciplina
+namespace GimnasioAPI.DTOs.Disciplina
 {
     public class DisciplinaConClasesDTO : DisciplinaDTO
     {

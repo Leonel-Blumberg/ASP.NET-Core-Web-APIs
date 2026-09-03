@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
-using GimnasioAPI2.Validaciones;
+using GimnasioAPI.Validaciones;
 
-namespace GimnasioAPI2.DTOs.Clase
+namespace GimnasioAPI.DTOs.Clase
 {
     public class ClasePatchDTO : IValidatableObject
     {

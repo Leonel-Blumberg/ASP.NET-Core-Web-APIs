@@ -1,4 +1,4 @@
-﻿namespace GimnasioAPI2.Entidades
+﻿namespace GimnasioAPI.Entidades
 {
     public class Resena
     {

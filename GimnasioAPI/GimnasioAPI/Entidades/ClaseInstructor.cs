@@ -1,4 +1,4 @@
-﻿namespace GimnasioAPI2.Entidades
+﻿namespace GimnasioAPI.Entidades
 {
     public class ClaseInstructor
     {
@@ -11,7 +11,7 @@
 
     public enum RolEnum
     {
-        Titular,
-        Suplente
+        Titular = 1,
+        Suplente = 2
     }
 }

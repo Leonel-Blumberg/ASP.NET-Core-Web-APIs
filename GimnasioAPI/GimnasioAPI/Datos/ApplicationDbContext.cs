@@ -1,7 +1,7 @@
-﻿using GimnasioAPI2.Entidades;
+﻿using GimnasioAPI.Entidades;
 using Microsoft.EntityFrameworkCore;
 
-namespace GimnasioAPI2.Datos
+namespace GimnasioAPI.Datos
 {
     public class ApplicationDbContext(DbContextOptions opciones) : DbContext(opciones)
     {
@@ -10,6 +10,7 @@ namespace GimnasioAPI2.Datos
             base.OnModelCreating(modelBuilder);
 
             modelBuilder.Entity<Clase>().Property(x => x.Nombre).HasMaxLength(50);
+            modelBuilder.Entity<Clase>().HasOne(x => x.Disciplina).WithMany(x => x.Clases).HasForeignKey(x => x.DisciplinaId).OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<ClaseInstructor>().HasKey(x => new { x.ClaseId, x.InstructorId });
 

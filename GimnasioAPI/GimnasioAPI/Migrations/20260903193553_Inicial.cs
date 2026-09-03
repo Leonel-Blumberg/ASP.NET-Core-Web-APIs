@@ -2,7 +2,7 @@
 
 #nullable disable
 
-namespace GimnasioAPI2.Migrations
+namespace GimnasioAPI.Migrations
 {
     /// <inheritdoc />
     public partial class Inicial : Migration

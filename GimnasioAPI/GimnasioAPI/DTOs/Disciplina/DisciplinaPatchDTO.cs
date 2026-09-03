@@ -1,4 +1,4 @@
-﻿namespace GimnasioAPI2.DTOs.Disciplina
+﻿namespace GimnasioAPI.DTOs.Disciplina
 {
     public class DisciplinaPatchDTO : DisciplinaCreacionDTO
     {

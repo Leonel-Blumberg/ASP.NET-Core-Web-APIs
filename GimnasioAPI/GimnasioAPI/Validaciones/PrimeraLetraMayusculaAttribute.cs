@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace GimnasioAPI2.Validaciones
+namespace GimnasioAPI.Validaciones
 {
     public class PrimeraLetraMayusculaAttribute : ValidationAttribute
     {

@@ -1,6 +1,6 @@
-﻿using GimnasioAPI2.Entidades;
+﻿using GimnasioAPI.Entidades;
 
-namespace GimnasioAPI2.DTOs.ClaseInstructor
+namespace GimnasioAPI.DTOs.ClaseInstructor
 {
     public class ClaseInstructorDTO
     {
