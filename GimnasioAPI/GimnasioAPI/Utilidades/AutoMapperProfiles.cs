@@ -22,7 +22,11 @@ namespace GimnasioAPI.Utilidades
             CreateMap<InstructorPatchDTO, Instructor>().ReverseMap();
 
             CreateMap<Clase, ClaseDTO>();
+            CreateMap<Clase, ClaseConHijosDTO>();
+            CreateMap<ClaseCreacionDTO, Clase>();
+            CreateMap<Clase, ClasePatchDTO>().ReverseMap();
 
+            CreateMap<ClaseInstructor, ClaseInstructorDTO>().ForMember(dto => dto.NombreCompleto, config => config.MapFrom(ent => $"{ent.Instructor!.Nombres} {ent.Instructor!.Apellidos}"));
             CreateMap<ClaseInstructor, InstructorClaseDTO>().ForMember(dto => dto.NombreClase, config => config.MapFrom(ent => $"{ent.Clase!.Nombre}"));
         }
     }
