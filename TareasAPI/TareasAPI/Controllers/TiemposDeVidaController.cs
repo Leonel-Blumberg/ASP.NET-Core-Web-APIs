@@ -1,10 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 
 namespace TareasAPI.Controllers
 {
     [ApiController]
     [Route("api/tiempos-de-vida")]
-    public class TiemposDeVidaController(ServicioTransient servicioTransient1, ServicioTransient servicioTransient2, ServicioScoped servicioScoped1, ServicioScoped servicioScoped2, ServicioSingleton servicioSingleton) : ControllerBase
+    public class TiemposDeVidaController(ServicioTransient transient1, ServicioTransient transient2, ServicioScoped scoped1, ServicioScoped scoped2, ServicioSingleton singleton) : ControllerBase
     {
         [HttpGet]
         public IActionResult Get()
@@ -13,15 +13,17 @@ namespace TareasAPI.Controllers
             {
                 Transient = new
                 {
-                    servicioTransient1 = servicioTransient1.ObtenerGuid,
-                    servicioTransient2 = servicioTransient2.ObtenerGuid
+                    servicioTransient1 = transient1.ObtenerGuid,
+                    servicioTransient2 = transient2.ObtenerGuid
                 },
+
                 Scoped = new
                 {
-                    servicioScoped1 = servicioScoped1.ObtenerGuid,
-                    servicioScoped2 = servicioScoped2.ObtenerGuid
+                    servicioScoped1 = scoped1.ObtenerGuid,
+                    servicioScoped2 = scoped2.ObtenerGuid
                 },
-                Singleton = servicioSingleton.ObtenerGuid
+
+                Singleton = singleton.ObtenerGuid
             });
         }
     }

@@ -12,7 +12,8 @@ namespace TareasAPI.Controllers
         [HttpGet]
         public async Task<IEnumerable<Tarea>> Get([FromQuery] bool? completadas, [FromQuery] int? listaId)
         {
-            logger.LogInformation("Obteniendo el listado de tareas.");
+            if (logger.IsEnabled(LogLevel.Information))
+                logger.LogInformation("Obteniendo el listado de tareas.");
 
             IQueryable<Tarea> consulta = contexto.Tareas;
 
@@ -37,7 +38,9 @@ namespace TareasAPI.Controllers
 
             if (tarea is null)
             {
-                logger.LogWarning("No se encontró la tarea de id {Id} al intentar buscarla.", id);
+                if (logger.IsEnabled(LogLevel.Information))
+                    logger.LogInformation("No se encontró la tarea de id {id} al intentar buscarla.", id);
+
                 return NotFound();
             }
 
@@ -73,9 +76,12 @@ namespace TareasAPI.Controllers
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, "Error al guardar la tarea {Titulo}.", tarea.Titulo);
+                logger.LogError(ex, "Error al guardar la tarea {titulo}.", tarea.Titulo);
                 return StatusCode(500, "No se pudo guardar la tarea.");
             }
+
+            if (logger.IsEnabled(LogLevel.Information))
+                logger.LogInformation("Se creó la tarea {id}.", tarea.Id);
 
             return CreatedAtRoute("ObtenerTareaPorId", new { id = tarea.Id }, tarea);
         }
@@ -93,7 +99,7 @@ namespace TareasAPI.Controllers
 
             if (!existeTarea)
             {
-                logger.LogWarning("No se encontró la tarea de id {Id} al intentar actualizarla.", id);
+                logger.LogWarning("No se encontró la tarea de id {id} al intentar actualizarla.", id);
                 return NotFound();
             }
 
@@ -107,6 +113,10 @@ namespace TareasAPI.Controllers
 
             contexto.Tareas.Update(tarea);
             await contexto.SaveChangesAsync();
+
+            if (logger.IsEnabled(LogLevel.Information))
+                logger.LogInformation("Se actualizó la tarea {id}.", id);
+
             return Ok();
         }
 
@@ -117,9 +127,12 @@ namespace TareasAPI.Controllers
 
             if (registrosBorrados == 0)
             {
-                logger.LogWarning("No se encontró la tarea de id {Id} al intentar borrarla.", id);
+                logger.LogWarning("No se encontró la tarea de id {id} al intentar borrarla.", id);
                 return NotFound();
             }
+
+            if (logger.IsEnabled(LogLevel.Information))
+                logger.LogInformation("Se borró la tarea {id}.", id);
 
             return Ok();
         }

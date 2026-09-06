@@ -13,7 +13,9 @@ namespace TareasAPI.Controllers
         [HttpGet]
         public async Task<IEnumerable<Lista>> Get()
         {
-            logger.LogInformation("Obteniendo el listado de listas.");
+            if (logger.IsEnabled(LogLevel.Information))
+                logger.LogInformation("Obteniendo el listado de listas.");
+
             return await contexto.Listas.ToListAsync();
         }
 
@@ -24,7 +26,9 @@ namespace TareasAPI.Controllers
 
             if (lista is null)
             {
-                logger.LogWarning("No se encontró la lista de id {Id} al intentar buscarla.", id);
+                if (logger.IsEnabled(LogLevel.Information))
+                    logger.LogInformation("No se encontró la lista de id {id} al intentar buscarla.", id);
+
                 return NotFound();
             }
 
@@ -47,9 +51,12 @@ namespace TareasAPI.Controllers
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, "Error al guardar la lista {Nombre}.", lista.Nombre);
+                logger.LogError(ex, "Error al guardar la lista {nombre}.", lista.Nombre);
                 return StatusCode(500, "No se pudo guardar la lista.");
             }
+
+            if (logger.IsEnabled(LogLevel.Information))
+                logger.LogInformation("Se creó la lista {id}.", lista.Id);
 
             return CreatedAtRoute("ObtenerListaPorId", new { id = lista.Id }, lista);
         }
@@ -67,12 +74,16 @@ namespace TareasAPI.Controllers
 
             if (!existeLista)
             {
-                logger.LogWarning("No se encontró la lista de id {Id} al intentar actualizarla.", id);
+                logger.LogWarning("No se encontró la lista de id {id} al intentar actualizarla.", id);
                 return NotFound();
             }
 
             contexto.Listas.Update(lista);
             await contexto.SaveChangesAsync();
+
+            if (logger.IsEnabled(LogLevel.Information))
+                logger.LogInformation("Se actualizó la lista {id}.", id);
+
             return Ok();
         }
 
@@ -83,9 +94,12 @@ namespace TareasAPI.Controllers
 
             if (registrosBorrados == 0)
             {
-                logger.LogWarning("No se encontró la lista de id {Id} al intentar borrarla.", id);
+                logger.LogWarning("No se encontró la lista de id {id} al intentar borrarla.", id);
                 return NotFound();
             }
+
+            if (logger.IsEnabled(LogLevel.Information))
+                logger.LogInformation("Se borró la lista {id}.", id);
 
             return Ok();
         }

@@ -13,7 +13,9 @@ namespace TareasAPI.Controllers
         [HttpGet]
         public IEnumerable<Nota> GetNotas()
         {
-            logger.LogInformation("Obteniendo el listado de notas.");
+            if (logger.IsEnabled(LogLevel.Information))
+                logger.LogInformation("Obteniendo el listado de notas.");
+
             return repositorio.ObtenerNotas();
         }
 
@@ -24,7 +26,9 @@ namespace TareasAPI.Controllers
 
             if (nota is null)
             {
-                logger.LogWarning("No se encontró la nota de id {Id} al intentar buscarla.", id);
+                if (logger.IsEnabled(LogLevel.Information))
+                    logger.LogInformation("No se encontró la nota de id {id} al intentar buscarla.", id);
+
                 return NotFound();
             }
 
@@ -56,9 +60,12 @@ namespace TareasAPI.Controllers
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, "Error al guardar la nota {Texto}.", nota.Texto);
+                logger.LogError(ex, "Error al guardar la nota {texto}.", nota.Texto);
                 return StatusCode(500, "No se pudo guardar la nota.");
             }
+
+            if (logger.IsEnabled(LogLevel.Information))
+                logger.LogInformation("Se creó la nota {id}.", notaCreada.Id);
 
             return CreatedAtAction(nameof(GetPorId), new { id = notaCreada.Id }, notaCreada);
         }
@@ -84,9 +91,12 @@ namespace TareasAPI.Controllers
 
             if (!notaActualizada)
             {
-                logger.LogWarning("No se encontró la nota de id {Id} al intentar actualizarla.", id);
+                logger.LogWarning("No se encontró la nota de id {id} al intentar actualizarla.", id);
                 return NotFound();
             }
+
+            if (logger.IsEnabled(LogLevel.Information))
+                logger.LogInformation("Se actualizó la nota {id}.", id);
 
             return Ok();
         }
@@ -96,9 +106,12 @@ namespace TareasAPI.Controllers
         {
             if (!repositorio.Eliminar(id))
             {
-                logger.LogWarning("No se encontró la nota de id {Id} al intentar borrarla.", id);
+                logger.LogWarning("No se encontró la nota de id {id} al intentar borrarla.", id);
                 return NotFound();
             }
+
+            if (logger.IsEnabled(LogLevel.Information))
+                logger.LogInformation("Se borró la nota {id}.", id);
 
             return Ok();
         }
