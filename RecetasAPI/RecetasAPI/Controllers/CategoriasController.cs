@@ -12,7 +12,9 @@ namespace RecetasAPI.Controllers
         [HttpGet]
         public async Task<IEnumerable<Categoria>> GetCategorias()
         {
-            logger.LogInformation("Obteniendo el listado de categorías.");
+            if (logger.IsEnabled(LogLevel.Information))
+                logger.LogInformation("Obteniendo el listado de categorías.");
+
             return await contexto.Categorias.ToListAsync();
         }
 
@@ -28,7 +30,9 @@ namespace RecetasAPI.Controllers
 
             if (categoria is null)
             {
-                logger.LogWarning("No se encontró la categoría de id {Id} al intentar buscarla.", id);
+                if (logger.IsEnabled(LogLevel.Information))
+                    logger.LogInformation("No se encontró la categoría de id {id} al intentar buscarla.", id);
+
                 return NotFound();
             }
 
@@ -56,9 +60,12 @@ namespace RecetasAPI.Controllers
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, "Error al guardar la categoría {Nombre}.", categoria.Nombre);
+                logger.LogError(ex, "Error al guardar la categoría {nombre}.", categoria.Nombre);
                 return StatusCode(500, "No se pudo guardar la categoría.");
             }
+
+            if (logger.IsEnabled(LogLevel.Information))
+                logger.LogInformation("Se creó la categoría {id}.", categoria.Id);
 
             return CreatedAtAction(nameof(GetCategoriaPorId), new { id = categoria.Id }, categoria);
         }
@@ -76,12 +83,16 @@ namespace RecetasAPI.Controllers
 
             if (!existeCategoria)
             {
-                logger.LogWarning("No se encontró la categoría de id {Id} al intentar actualizarla.", id);
+                logger.LogWarning("No se encontró la categoría de id {id} al intentar actualizarla.", id);
                 return NotFound();
             }
 
             contexto.Update(categoria);
             await contexto.SaveChangesAsync();
+
+            if (logger.IsEnabled(LogLevel.Information))
+                logger.LogInformation("Se actualizó la categoría {id}.", id);
+
             return Ok();
         }
 
@@ -92,9 +103,12 @@ namespace RecetasAPI.Controllers
 
             if (registrosBorrados == 0)
             {
-                logger.LogWarning("No se encontró la categoría de id {Id} al intentar eliminarla.", id);
+                logger.LogWarning("No se encontró la categoría de id {id} al intentar eliminarla.", id);
                 return NotFound();
             }
+
+            if (logger.IsEnabled(LogLevel.Information))
+                logger.LogInformation("Se borró la categoría {id}.", id);
 
             return Ok();
         }

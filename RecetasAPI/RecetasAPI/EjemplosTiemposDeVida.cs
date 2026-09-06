@@ -1,23 +1,11 @@
-﻿namespace RecetasAPI
+namespace RecetasAPI
 {
-    public class ServicioTransient
+    public abstract class ServicioConGuid
     {
-        private readonly Guid _guid;
-        public ServicioTransient() => _guid = Guid.NewGuid();
-        public Guid ObtenerGuid => _guid;
+        public Guid ObtenerGuid { get; } = Guid.NewGuid();
     }
 
-    public class ServicioScoped
-    {
-        private readonly Guid _guid;
-        public ServicioScoped() => _guid = Guid.NewGuid();
-        public Guid ObtenerGuid => _guid;
-    }
-
-    public class ServicioSingleton
-    {
-        private readonly Guid _guid;
-        public ServicioSingleton() => _guid = Guid.NewGuid();
-        public Guid ObtenerGuid => _guid;
-    }
+    public class ServicioTransient : ServicioConGuid { }
+    public class ServicioScoped : ServicioConGuid { }
+    public class ServicioSingleton : ServicioConGuid { }
 }

@@ -13,15 +13,17 @@ namespace RecetasAPI.Controllers
             {
                 Transient = new
                 {
-                    transient1 = transient1.ObtenerGuid,
-                    transient2 = transient2.ObtenerGuid
+                    servicioTransient1 = transient1.ObtenerGuid,
+                    servicioTransient2 = transient2.ObtenerGuid
                 },
+
                 Scoped = new
                 {
-                    scoped1 = scoped1.ObtenerGuid,
-                    scoped2 = scoped2.ObtenerGuid
+                    servicioScoped1 = scoped1.ObtenerGuid,
+                    servicioScoped2 = scoped2.ObtenerGuid
                 },
-                singleton = singleton.ObtenerGuid
+
+                Singleton = singleton.ObtenerGuid
             });
         }
     }

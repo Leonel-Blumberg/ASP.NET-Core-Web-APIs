@@ -1,8 +1,8 @@
 @RecetasAPI_HostAddress = http://localhost:5260
 
-### ---------- CATEGORIAS ----------
+### ---------- Categorías ----------
 
-### Crear una categoria
+### Crear una categoría
 POST {{RecetasAPI_HostAddress}}/api/categorias
 Content-Type: application/json
 
@@ -10,7 +10,7 @@ Content-Type: application/json
   "nombre": "Postres"
 }
 
-### Crear otra categoria
+### Crear otra categoría
 POST {{RecetasAPI_HostAddress}}/api/categorias
 Content-Type: application/json
 
@@ -18,7 +18,7 @@ Content-Type: application/json
   "nombre": "Ensaladas"
 }
 
-### FALLA 400 - el nombre no empieza con mayuscula
+### FALLA 400 - Rechazar la petición porque el nombre no comienza con mayúscula
 POST {{RecetasAPI_HostAddress}}/api/categorias
 Content-Type: application/json
 
@@ -26,7 +26,7 @@ Content-Type: application/json
   "nombre": "postres"
 }
 
-### FALLA 400 - el nombre pasa los 50 caracteres
+### FALLA 400 - Rechazar la petición porque el nombre supera el MaxLength
 POST {{RecetasAPI_HostAddress}}/api/categorias
 Content-Type: application/json
 
@@ -34,22 +34,22 @@ Content-Type: application/json
   "nombre": "Postres caseros de la abuela con muchas frutas y crema batida"
 }
 
-### Listado de categorias
+### Leer las categorías
 GET {{RecetasAPI_HostAddress}}/api/categorias
 
-### Categoria por id
+### Leer las categorías por id
 GET {{RecetasAPI_HostAddress}}/api/categorias/1
 
-### Categoria por id, con sus recetas incluidas
+### Leer las categorías por id incluyendo sus recetas
 GET {{RecetasAPI_HostAddress}}/api/categorias/1?incluirRecetas=true
 
-### Categoria por texto
+### Leer las categorías por nombre
 GET {{RecetasAPI_HostAddress}}/api/categorias/Post
 
-### FALLA 404 - la categoria no existe
+### FALLA 404 - No se encuentra la id
 GET {{RecetasAPI_HostAddress}}/api/categorias/999
 
-### Modificar una categoria
+### Modificar una categoría entera
 PUT {{RecetasAPI_HostAddress}}/api/categorias/2
 Content-Type: application/json
 
@@ -58,7 +58,7 @@ Content-Type: application/json
   "nombre": "Ensaladas frescas"
 }
 
-### FALLA 400 - la id de la ruta no coincide con la del cuerpo
+### FALLA 400 - Rechazar la petición porque la id de la ruta no coincide con la del cuerpo
 PUT {{RecetasAPI_HostAddress}}/api/categorias/2
 Content-Type: application/json
 
@@ -67,7 +67,7 @@ Content-Type: application/json
   "nombre": "Ensaladas frescas"
 }
 
-### ---------- RECETAS ----------
+### ---------- Recetas ----------
 
 ### Crear una receta
 POST {{RecetasAPI_HostAddress}}/api/recetas
@@ -93,7 +93,7 @@ Content-Type: application/json
   "categoriaId": 2
 }
 
-### FALLA 400 - la categoria no existe en la base
+### FALLA 400 - Rechazar la petición porque la categoría no existe
 POST {{RecetasAPI_HostAddress}}/api/recetas
 Content-Type: application/json
 
@@ -105,7 +105,7 @@ Content-Type: application/json
   "categoriaId": 999
 }
 
-### FALLA 400 - la coccion es mayor que el tiempo total
+### FALLA 400 - Rechazar la petición porque la cocción supera el tiempo total
 POST {{RecetasAPI_HostAddress}}/api/recetas
 Content-Type: application/json
 
@@ -117,7 +117,7 @@ Content-Type: application/json
   "categoriaId": 1
 }
 
-### FALLA 400 - el titulo no empieza con mayuscula
+### FALLA 400 - Rechazar la petición porque el título no comienza con mayúscula
 POST {{RecetasAPI_HostAddress}}/api/recetas
 Content-Type: application/json
 
@@ -129,7 +129,7 @@ Content-Type: application/json
   "categoriaId": 1
 }
 
-### FALLA 400 - el tiempo total es 0
+### FALLA 400 - Rechazar la petición porque el tiempo total es 0
 POST {{RecetasAPI_HostAddress}}/api/recetas
 Content-Type: application/json
 
@@ -141,7 +141,7 @@ Content-Type: application/json
   "categoriaId": 1
 }
 
-### FALLA 400 - falta el titulo
+### FALLA 400 - Rechazar la petición porque falta el título
 POST {{RecetasAPI_HostAddress}}/api/recetas
 Content-Type: application/json
 
@@ -152,26 +152,27 @@ Content-Type: application/json
   "categoriaId": 1
 }
 
-### Listado de recetas
+### Leer las recetas
 GET {{RecetasAPI_HostAddress}}/api/recetas
 
-### Receta por id
+### Leer las recetas por id
 GET {{RecetasAPI_HostAddress}}/api/recetas/1
 
-### Receta por id, con la categoria incluida
+### Leer las recetas por id incluyendo su categoría
 GET {{RecetasAPI_HostAddress}}/api/recetas/1?incluirCategoria=true
 
-### FALLA 404 - la receta no existe
+### FALLA 404 - No se encuentra la id
 GET {{RecetasAPI_HostAddress}}/api/recetas/999
 
-### Receta por titulo (el espacio va como %20)
+# El título lleva espacios, así que en la ruta van como %20.
+### Leer las recetas por título
 GET {{RecetasAPI_HostAddress}}/api/recetas/Tarta%20de%20manzana
 
-### Receta por titulo, solo las vegetarianas
+### Leer las recetas por título, sólo las vegetarianas
 GET {{RecetasAPI_HostAddress}}/api/recetas/a
 solo-vegetarianas: true
 
-### Modificar una receta
+### Modificar una receta entera
 PUT {{RecetasAPI_HostAddress}}/api/recetas/1
 Content-Type: application/json
 
@@ -184,7 +185,7 @@ Content-Type: application/json
   "categoriaId": 1
 }
 
-### FALLA 400 - la id de la ruta no coincide con la del cuerpo
+### FALLA 400 - Rechazar la petición porque la id de la ruta no coincide con la del cuerpo
 PUT {{RecetasAPI_HostAddress}}/api/recetas/1
 Content-Type: application/json
 
@@ -197,7 +198,7 @@ Content-Type: application/json
   "categoriaId": 1
 }
 
-### FALLA 404 - la receta a modificar no existe
+### FALLA 404 - No se encuentra la id
 PUT {{RecetasAPI_HostAddress}}/api/recetas/999
 Content-Type: application/json
 
@@ -210,13 +211,17 @@ Content-Type: application/json
   "categoriaId": 1
 }
 
-### Eliminar una receta
+### Borrar una receta
 DELETE {{RecetasAPI_HostAddress}}/api/recetas/2
 
-### FALLA 404 - la receta a eliminar no existe
+### FALLA 404 - No se encuentra la id
 DELETE {{RecetasAPI_HostAddress}}/api/recetas/999
 
-### ---------- COMENTARIOS (en memoria) ----------
+### ---------- Comentarios ----------
+
+# Los comentarios no van a la base: viven en un repositorio en memoria
+# registrado como singleton, así que sobreviven entre peticiones y se pierden
+# al reiniciar la app.
 
 ### Crear un comentario
 POST {{RecetasAPI_HostAddress}}/api/comentarios
@@ -236,7 +241,7 @@ Content-Type: application/json
   "texto": "Le pondria menos azucar."
 }
 
-### FALLA 400 - el texto no empieza con mayuscula
+### FALLA 400 - Rechazar la petición porque el texto no comienza con mayúscula
 POST {{RecetasAPI_HostAddress}}/api/comentarios
 Content-Type: application/json
 
@@ -245,19 +250,19 @@ Content-Type: application/json
   "texto": "quedo riquisima."
 }
 
-### Listado de comentarios (sobrevive entre peticiones)
+### Leer los comentarios
 GET {{RecetasAPI_HostAddress}}/api/comentarios
 
-### Comentario por id
+### Leer los comentarios por id
 GET {{RecetasAPI_HostAddress}}/api/comentarios/1
 
-### FALLA 404 - el comentario no existe
+### FALLA 404 - No se encuentra la id
 GET {{RecetasAPI_HostAddress}}/api/comentarios/999
 
-### Comentarios por texto
+### Leer los comentarios por texto
 GET {{RecetasAPI_HostAddress}}/api/comentarios/azucar
 
-### Modificar un comentario
+### Modificar un comentario entero
 PUT {{RecetasAPI_HostAddress}}/api/comentarios/1
 Content-Type: application/json
 
@@ -267,7 +272,7 @@ Content-Type: application/json
   "texto": "Quedo bien, pero tarda mas de lo que dice."
 }
 
-### FALLA 404 - el comentario a modificar no existe
+### FALLA 404 - No se encuentra la id
 PUT {{RecetasAPI_HostAddress}}/api/comentarios/999
 Content-Type: application/json
 
@@ -277,23 +282,31 @@ Content-Type: application/json
   "texto": "Comentario fantasma."
 }
 
-### Eliminar un comentario
+### Borrar un comentario
 DELETE {{RecetasAPI_HostAddress}}/api/comentarios/2
 
-### FALLA 404 - el comentario a eliminar no existe
+### FALLA 404 - No se encuentra la id
 DELETE {{RecetasAPI_HostAddress}}/api/comentarios/999
 
-### ---------- TIEMPOS DE VIDA ----------
+### ---------- Tiempos de vida ----------
 
-### Los dos Transient dan guids distintos, los dos Scoped el mismo,
-### y el Singleton repite el mismo guid en todas las peticiones.
+# Correr las dos peticiones seguidas y comparar los guids:
+# - los dos transient son distintos entre sí en cada petición
+# - los dos scoped son iguales entre sí, pero cambian de una petición a la otra
+# - el singleton es el mismo en las dos y sigue igual hasta reiniciar la app
+
+### Leer los tiempos de vida
 GET {{RecetasAPI_HostAddress}}/api/tiempos-de-vida
 
-### Repetir para ver que solo el Singleton mantiene su guid
+### Leer los tiempos de vida otra vez
 GET {{RecetasAPI_HostAddress}}/api/tiempos-de-vida
 
-### ---------- MANTENIMIENTO ----------
+### ---------- Middlewares ----------
 
-### Con "Mantenimiento": true en appsettings.json, todo /api devuelve 503.
-### Fuera de /api el middleware deja pasar.
+# Este bloque va al final porque el modo mantenimiento bloquea todo /api.
+# Poné "Mantenimiento": true en appsettings.json, guardá y corré el de abajo
+# sin reiniciar la app: la configuración se relee en cada petición. Al terminar,
+# volvelo a dejar en false.
+
+### FALLA 503 - La API esta en mantenimiento
 GET {{RecetasAPI_HostAddress}}/api/recetas

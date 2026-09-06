@@ -11,7 +11,9 @@ namespace RecetasAPI.Controllers
         [HttpGet]
         public IEnumerable<Comentario> GetComentarios()
         {
-            logger.LogInformation("Obteniendo el listado de comentarios.");
+            if (logger.IsEnabled(LogLevel.Information))
+                logger.LogInformation("Obteniendo el listado de comentarios.");
+
             return comentarios.GetComentarios();
         }
 
@@ -22,7 +24,9 @@ namespace RecetasAPI.Controllers
 
             if (comentario is null)
             {
-                logger.LogWarning("No se encontró el comentario de id {Id} al intentar buscarlo.", id);
+                if (logger.IsEnabled(LogLevel.Information))
+                    logger.LogInformation("No se encontró el comentario de id {id} al intentar buscarlo.", id);
+
                 return NotFound();
             }
 
@@ -43,9 +47,12 @@ namespace RecetasAPI.Controllers
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, "Error al guardar el comentario {Texto}.", comentario.Texto);
+                logger.LogError(ex, "Error al guardar el comentario {texto}.", comentario.Texto);
                 return StatusCode(500, "No se pudo guardar el comentario.");
             }
+
+            if (logger.IsEnabled(LogLevel.Information))
+                logger.LogInformation("Se creó el comentario {id}.", comentarioCreado.Id);
 
             return CreatedAtAction(nameof(GetComentarioPorId), new { id = comentarioCreado.Id }, comentarioCreado);
         }
@@ -61,9 +68,12 @@ namespace RecetasAPI.Controllers
 
             if (!comentarios.PutComentario(id, comentario))
             {
-                logger.LogWarning("No se encontró el comentario de id {Id} al intentar actualizarlo.", id);
+                logger.LogWarning("No se encontró el comentario de id {id} al intentar actualizarlo.", id);
                 return NotFound();
             }
+
+            if (logger.IsEnabled(LogLevel.Information))
+                logger.LogInformation("Se actualizó el comentario {id}.", id);
 
             return Ok();
         }
@@ -73,9 +83,12 @@ namespace RecetasAPI.Controllers
         {
             if (!comentarios.DeleteComentario(id))
             {
-                logger.LogWarning("No se encontró el comentario de id {Id} al intentar eliminarlo.", id);
+                logger.LogWarning("No se encontró el comentario de id {id} al intentar eliminarlo.", id);
                 return NotFound();
             }
+
+            if (logger.IsEnabled(LogLevel.Information))
+                logger.LogInformation("Se borró el comentario {id}.", id);
 
             return Ok();
         }

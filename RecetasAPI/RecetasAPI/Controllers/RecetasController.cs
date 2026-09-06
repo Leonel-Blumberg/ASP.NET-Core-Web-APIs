@@ -12,7 +12,9 @@ namespace RecetasAPI.Controllers
         [HttpGet]
         public async Task<IEnumerable<Receta>> GetRecetas()
         {
-            logger.LogInformation("Obteniendo el listado de recetas.");
+            if (logger.IsEnabled(LogLevel.Information))
+                logger.LogInformation("Obteniendo el listado de recetas.");
+
             return await contexto.Recetas.ToListAsync();
         }
 
@@ -28,7 +30,9 @@ namespace RecetasAPI.Controllers
 
             if (receta is null)
             {
-                logger.LogWarning("No se encontró la receta de id {Id} al intentar buscarla.", id);
+                if (logger.IsEnabled(LogLevel.Information))
+                    logger.LogInformation("No se encontró la receta de id {id} al intentar buscarla.", id);
+
                 return NotFound();
             }
 
@@ -67,9 +71,12 @@ namespace RecetasAPI.Controllers
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, "Error al guardar la receta {Titulo}.", receta.Titulo);
+                logger.LogError(ex, "Error al guardar la receta {titulo}.", receta.Titulo);
                 return StatusCode(500, "No se pudo guardar la receta.");
             }
+
+            if (logger.IsEnabled(LogLevel.Information))
+                logger.LogInformation("Se creó la receta {id}.", receta.Id);
 
             return CreatedAtAction(nameof(GetRecetaPorId), new { id = receta.Id }, receta);
         }
@@ -87,7 +94,7 @@ namespace RecetasAPI.Controllers
 
             if (!existeReceta)
             {
-                logger.LogWarning("No se encontró la receta de id {Id} al intentar actualizarla.", id);
+                logger.LogWarning("No se encontró la receta de id {id} al intentar actualizarla.", id);
                 return NotFound();
             }
 
@@ -101,6 +108,10 @@ namespace RecetasAPI.Controllers
 
             contexto.Update(receta);
             await contexto.SaveChangesAsync();
+
+            if (logger.IsEnabled(LogLevel.Information))
+                logger.LogInformation("Se actualizó la receta {id}.", id);
+
             return Ok();
         }
 
@@ -111,9 +122,12 @@ namespace RecetasAPI.Controllers
 
             if (registrosBorrados == 0)
             {
-                logger.LogWarning("No se encontró la receta de id {Id} al intentar eliminarla.", id);
+                logger.LogWarning("No se encontró la receta de id {id} al intentar eliminarla.", id);
                 return NotFound();
             }
+
+            if (logger.IsEnabled(LogLevel.Information))
+                logger.LogInformation("Se borró la receta {id}.", id);
 
             return Ok();
         }

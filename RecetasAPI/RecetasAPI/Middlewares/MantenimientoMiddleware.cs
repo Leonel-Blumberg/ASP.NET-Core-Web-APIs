@@ -6,7 +6,7 @@ namespace RecetasAPI.Middlewares
         {
             if (configuracion.GetValue<bool>("Mantenimiento") && contexto.Request.Path.StartsWithSegments("/api"))
             {
-                logger.LogWarning("Petición a {Ruta} bloqueada: modo mantenimiento activo.", contexto.Request.Path);
+                logger.LogWarning("Petición a ruta {Ruta} bloqueada: modo mantenimiento activo.", contexto.Request.Path);
 
                 contexto.Response.StatusCode = StatusCodes.Status503ServiceUnavailable;
                 await contexto.Response.WriteAsync("API en mantenimiento");
