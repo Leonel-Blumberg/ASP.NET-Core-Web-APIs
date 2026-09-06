@@ -1,10 +1,11 @@
-﻿using GimnasioAPI.DTOs.Resena;
+using GimnasioAPI.DTOs.Resena;
+using GimnasioAPI.Entidades;
 
 namespace GimnasioAPI.Interfaces
 {
     public interface IRepositorioResenas
     {
-        IReadOnlyCollection<ResenaDTO> ObtenerPorClase(int claseId);
-        ResenaDTO Crear(int claseId, ResenaCreacionDTO resenaCreacionDTO);
+        IReadOnlyCollection<Resena> ObtenerPorClase(int claseId);
+        Resena Crear(int claseId, ResenaCreacionDTO resenaCreacionDTO);
     }
 }

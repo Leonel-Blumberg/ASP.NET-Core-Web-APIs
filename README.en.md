@@ -3,8 +3,6 @@
 # ASP.NET Core Web APIs
 
 REST Web APIs built with ASP.NET Core and Entity Framework Core on .NET 10.
-They are ongoing projects: each one starts by solving a simple model and keeps
-growing as I add features.
 
 They all share the same foundation: Entity Framework Core with migrations, an
 in-memory repository behind an interface, custom middleware, and validation
@@ -65,6 +63,46 @@ previous project, solved over a different domain.
 | POST | `api/comentarios` | Create a comment |
 | PUT | `api/comentarios/{id}` | Update a comment |
 | DELETE | `api/comentarios/{id}` | Delete a comment |
+| GET | `api/tiempos-de-vida` | Shows the difference between Transient, Scoped, and Singleton |
+
+### GimnasioAPI
+
+A gym runs **Classes**. Each class belongs to a **Discipline** and is taught by
+one or more **Instructors**. Each instructor's role, lead or substitute, belongs
+to that pairing rather than to the instructor, so the many-to-many relationship
+has its own join entity. Students leave **Reviews**, identified by `Guid`, which
+live in memory and never reach the database.
+
+On top of the shared foundation, this project adds DTOs mapped with AutoMapper,
+so that no entity ever enters or leaves through the API, and partial updates
+with `JsonPatchDocument`.
+
+| Method | Route | What it does |
+|---|---|---|
+| GET | `api/disciplinas` | All disciplines |
+| GET | `api/disciplinas/{id}` | One discipline with its classes |
+| POST | `api/disciplinas` | Create a discipline |
+| PUT | `api/disciplinas/{id}` | Update a discipline |
+| PATCH | `api/disciplinas/{id}` | Partially update a discipline |
+| DELETE | `api/disciplinas/{id}` | Delete a discipline, if it has no classes |
+| GET | `api/instructores` | All instructors |
+| GET | `api/instructores/{id}` | One instructor with their classes |
+| POST | `api/instructores` | Create an instructor |
+| PUT | `api/instructores/{id}` | Update an instructor |
+| PATCH | `api/instructores/{id}` | Partially update an instructor |
+| DELETE | `api/instructores/{id}` | Delete an instructor |
+| GET | `api/instructores-coleccion/{ids}` | Several instructors by comma-separated ids |
+| POST | `api/instructores-coleccion` | Create several instructors at once |
+| GET | `api/clases?disciplinaId=&activa=` | Classes, with optional filters |
+| GET | `api/clases/{id}` | One class, with the `incluir-disciplina` header |
+| GET | `api/clases/{nombre}` | Search classes by name |
+| POST | `api/clases` | Create a class with its instructors and roles |
+| PUT | `api/clases/{id}` | Update a class and replace its instructors |
+| PATCH | `api/clases/{id}` | Partially update a class |
+| DELETE | `api/clases/{id}` | Delete a class |
+| GET | `api/clases/{claseId}/resenas` | Reviews of a class |
+| GET | `api/clases/{claseId}/resenas/{guid}` | One review |
+| POST | `api/clases/{claseId}/resenas` | Create a review |
 | GET | `api/tiempos-de-vida` | Shows the difference between Transient, Scoped, and Singleton |
 
 ## Prerequisites

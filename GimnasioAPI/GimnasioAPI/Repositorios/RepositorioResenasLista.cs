@@ -1,4 +1,5 @@
-﻿using GimnasioAPI.DTOs.Resena;
+using GimnasioAPI.DTOs.Resena;
+using GimnasioAPI.Entidades;
 using GimnasioAPI.Interfaces;
 
 namespace GimnasioAPI.Repositorios
@@ -6,19 +7,19 @@ namespace GimnasioAPI.Repositorios
     public class RepositorioResenasLista : IRepositorioResenas
     {
         private readonly Lock candado = new();
-        private readonly List<ResenaDTO> resenaDTOs = [];
+        private readonly List<Resena> resenas = [];
 
-        public IReadOnlyCollection<ResenaDTO> ObtenerPorClase(int claseId)
+        public IReadOnlyCollection<Resena> ObtenerPorClase(int claseId)
         {
             lock (candado)
-                return [.. resenaDTOs.Where(x => x.ClaseId == claseId)];
+                return [.. resenas.Where(x => x.ClaseId == claseId)];
         }
 
-        public ResenaDTO Crear(int claseId, ResenaCreacionDTO resenaCreacionDTO)
+        public Resena Crear(int claseId, ResenaCreacionDTO resenaCreacionDTO)
         {
             lock(candado)
             {
-                ResenaDTO resenaDTO = new()
+                Resena resena = new()
                 {
                     Id = Guid.NewGuid(),
                     ClaseId = claseId,
@@ -27,8 +28,8 @@ namespace GimnasioAPI.Repositorios
                     FechaPublicacion = DateTime.UtcNow
                 };
 
-                resenaDTOs.Add(resenaDTO);
-                return resenaDTO;
+                resenas.Add(resena);
+                return resena;
             }
 
         }

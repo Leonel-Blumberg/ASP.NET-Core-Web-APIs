@@ -431,6 +431,97 @@ Content-Type: application/json-patch+json
     { "op": "replace", "path": "/cupoMinimo", "value": 100}
 ]
 
+### ---------- Reseñas ----------
+
+# El guid de una reseña lo genera el repositorio en cada POST, así que no se puede
+# saber de antemano. Corré el POST de acá abajo, copiá el "id" de la respuesta 201
+# y pegalo en esta variable. Si reiniciás la app el repositorio se vacía y hay que
+# volver a hacerlo, porque las reseñas viven en memoria.
+@resenaId = 00000000-0000-0000-0000-000000000000
+
+### Crear una reseña
+POST {{GimnasioAPI_HostAddress}}/api/clases/1/resenas
+Content-Type: application/json
+
+{
+    "texto": "Muy buena clase, el instructor explica bien.",
+    "puntaje": 9
+}
+
+### Crear otra reseña
+POST {{GimnasioAPI_HostAddress}}/api/clases/1/resenas
+Content-Type: application/json
+
+{
+    "texto": "Me gustó la clase, el profesor muy atento.",
+    "puntaje": 8
+}
+
+### Crear una reseña en otra clase
+POST {{GimnasioAPI_HostAddress}}/api/clases/2/resenas
+Content-Type: application/json
+
+{
+    "texto": "La clase estuvo muy bien, aunque no dura mucho.",
+    "puntaje": 7
+}
+
+### FALLA 404 - No se encuentra la clase
+POST {{GimnasioAPI_HostAddress}}/api/clases/999/resenas
+Content-Type: application/json
+
+{
+    "texto": "Muy buena clase, el instructor explica bien.",
+    "puntaje": 9
+}
+
+### FALLA 400 - Rechazar la petición porque el texto es obligatorio
+POST {{GimnasioAPI_HostAddress}}/api/clases/1/resenas
+Content-Type: application/json
+
+{
+    "puntaje": 5
+}
+
+### FALLA 400 - Rechazar la petición porque el texto supera el MaxLength
+POST {{GimnasioAPI_HostAddress}}/api/clases/1/resenas
+Content-Type: application/json
+
+{
+    "texto": "La clase estuvo muy bien, el instructor explicó cada ejercicio con paciencia, corrigió las posturas una por una, adaptó la rutina para los que recién empiezan, puso buena música, ventiló el salón, ordenó el material al terminar y encima se quedó respondiendo preguntas hasta que no quedó nadie.",
+    "puntaje": 10
+}
+
+### FALLA 400 - Rechazar la petición porque el puntaje supera el máximo
+POST {{GimnasioAPI_HostAddress}}/api/clases/1/resenas
+Content-Type: application/json
+
+{
+    "texto": "Muy buena clase, el instructor explica bien.",
+    "puntaje": 11
+}
+
+### Leer las reseñas de una clase
+GET {{GimnasioAPI_HostAddress}}/api/clases/1/resenas
+
+### Leer las reseñas de otra clase
+GET {{GimnasioAPI_HostAddress}}/api/clases/2/resenas
+
+### FALLA 404 - No se encuentra la clase
+GET {{GimnasioAPI_HostAddress}}/api/clases/999/resenas
+
+### Leer una reseña por guid
+GET {{GimnasioAPI_HostAddress}}/api/clases/1/resenas/{{resenaId}}
+
+### FALLA 404 - No se encuentra la guid
+GET {{GimnasioAPI_HostAddress}}/api/clases/1/resenas/00000000-0000-0000-0000-000000000000
+
+### FALLA 404 - No se encuentra la clase
+GET {{GimnasioAPI_HostAddress}}/api/clases/999/resenas/{{resenaId}}
+
+### FALLA 404 - La reseña pertenece a otra clase
+GET {{GimnasioAPI_HostAddress}}/api/clases/2/resenas/{{resenaId}}
+
 ### ---------- Borrados ----------
 
 ### FALLA 400 - No se puede borrar una disciplina que tiene clases asociadas
@@ -453,3 +544,32 @@ DELETE {{GimnasioAPI_HostAddress}}/api/instructores/999
 
 ### Borrar una disciplina
 DELETE {{GimnasioAPI_HostAddress}}/api/disciplinas/1
+
+### ---------- Tiempos de vida ----------
+
+# Correr las dos peticiones seguidas y comparar los guids:
+# - los dos transient son distintos entre sí en cada petición
+# - los dos scoped son iguales entre sí, pero cambian de una petición a la otra
+# - el singleton es el mismo en las dos y sigue igual hasta reiniciar la app
+
+### Leer los tiempos de vida
+GET {{GimnasioAPI_HostAddress}}/api/tiempos-de-vida
+
+### Leer los tiempos de vida otra vez
+GET {{GimnasioAPI_HostAddress}}/api/tiempos-de-vida
+
+### ---------- Middlewares ----------
+
+# Estos bloques van al final porque el modo mantenimiento bloquea todo /api.
+# Poné "Mantenimiento": true en appsettings.json, guardá y corré los tres de abajo
+# sin reiniciar la app: la configuración se relee en cada petición. Al terminar,
+# volvelo a dejar en false.
+
+### FALLA 503 - La API esta en mantenimiento
+GET {{GimnasioAPI_HostAddress}}/api/disciplinas
+
+### FALLA 503 - El mantenimiento bloquea todo lo que cuelga de /api
+GET {{GimnasioAPI_HostAddress}}/api/tiempos-de-vida
+
+### Comprobar que una ruta fuera de /api no queda bloqueada (404, no 503)
+GET {{GimnasioAPI_HostAddress}}/apiario

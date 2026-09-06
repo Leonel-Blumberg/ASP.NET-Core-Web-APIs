@@ -24,6 +24,8 @@ namespace GimnasioAPI.Controllers
 
             if (idsColeccion.Count == 0)
             {
+                logger.LogWarning("No se recibio ninguna id valida en la coleccion {ids}.", ids);
+
                 ModelState.AddModelError(nameof(ids), "Ningun Id fue encontrado.");
                 return ValidationProblem();
             }

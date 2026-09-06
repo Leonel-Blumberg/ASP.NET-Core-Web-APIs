@@ -1,4 +1,5 @@
-﻿using GimnasioAPI.DTOs.Resena;
+using GimnasioAPI.DTOs.Resena;
+using GimnasioAPI.Entidades;
 using GimnasioAPI.Interfaces;
 
 namespace GimnasioAPI.Repositorios
@@ -6,19 +7,19 @@ namespace GimnasioAPI.Repositorios
     public class RepositorioResenaDiccionario : IRepositorioResenas
     {
         private readonly Lock candado = new();
-        private readonly Dictionary<int, List<ResenaDTO>> resenaDTOs = [];
+        private readonly Dictionary<int, List<Resena>> resenasPorClase = [];
 
-        public IReadOnlyCollection<ResenaDTO> ObtenerPorClase(int claseId)
+        public IReadOnlyCollection<Resena> ObtenerPorClase(int claseId)
         {
             lock (candado)
-                return resenaDTOs.TryGetValue(claseId, out List<ResenaDTO>? resenas) ? resenas.ToList() : [];
+                return resenasPorClase.TryGetValue(claseId, out List<Resena>? resenas) ? resenas.ToList() : [];
         }
 
-        public ResenaDTO Crear(int claseId, ResenaCreacionDTO resenaCreacionDTO)
+        public Resena Crear(int claseId, ResenaCreacionDTO resenaCreacionDTO)
         {
             lock (candado)
             {
-                ResenaDTO resenaDTO = new()
+                Resena resena = new()
                 {
                     Id = Guid.NewGuid(),
                     ClaseId = claseId,
@@ -27,11 +28,11 @@ namespace GimnasioAPI.Repositorios
                     FechaPublicacion = DateTime.UtcNow
                 };
 
-                if (!resenaDTOs.ContainsKey(claseId))
-                    resenaDTOs[claseId] = [];
+                if (!resenasPorClase.ContainsKey(claseId))
+                    resenasPorClase[claseId] = [];
 
-                resenaDTOs[claseId].Add(resenaDTO);
-                return resenaDTO;
+                resenasPorClase[claseId].Add(resena);
+                return resena;
             }
         }
 

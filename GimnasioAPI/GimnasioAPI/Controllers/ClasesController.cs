@@ -31,10 +31,10 @@ namespace GimnasioAPI.Controllers
         [HttpGet("{id:int}", Name = "ObtenerClase")]
         public async Task<ActionResult<ClaseDTO>> GetPorId([FromRoute] int id, [FromHeader(Name = "incluir-disciplina")] bool incluirDisciplina)
         {
-            IQueryable<Clase> queryable = contexto.Clases.Include(x => x.Instructores).ThenInclude(x => x.Instructor);
+            IQueryable<Clase> queryable = contexto.Clases;
 
             if (incluirDisciplina)
-                queryable = queryable.Include(x => x.Disciplina);
+                queryable = queryable.Include(x => x.Instructores).ThenInclude(x => x.Instructor).Include(x => x.Disciplina);
 
             Clase? clase = await queryable.FirstOrDefaultAsync(x => x.Id == id);
 
@@ -46,8 +46,10 @@ namespace GimnasioAPI.Controllers
                 return NotFound();
             }
 
-            ClaseConHijosDTO claseconHijosDTO = mapper.Map<ClaseConHijosDTO>(clase);
-            return claseconHijosDTO;
+            if (incluirDisciplina)
+                return mapper.Map<ClaseConHijosDTO>(clase);
+
+            return mapper.Map<ClaseDTO>(clase);
         }
 
         [HttpGet("{nombre}")]

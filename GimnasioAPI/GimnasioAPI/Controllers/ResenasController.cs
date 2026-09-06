@@ -1,5 +1,7 @@
-﻿using GimnasioAPI.Datos;
+﻿using AutoMapper;
+using GimnasioAPI.Datos;
 using GimnasioAPI.DTOs.Resena;
+using GimnasioAPI.Entidades;
 using GimnasioAPI.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -8,7 +10,7 @@ namespace GimnasioAPI.Controllers
 {
     [ApiController]
     [Route("api/clases/{claseId:int}/resenas")]
-    public class ResenasController(ApplicationDbContext contexto, IRepositorioResenas resenas, ILogger<ResenasController> logger) : ControllerBase
+    public class ResenasController(ApplicationDbContext contexto, IRepositorioResenas resenas, IMapper mapper, ILogger<ResenasController> logger) : ControllerBase
     {
         [HttpGet]
         public async Task<ActionResult<IEnumerable<ResenaDTO>>> Get([FromRoute] int claseId)
@@ -23,8 +25,9 @@ namespace GimnasioAPI.Controllers
                 return NotFound();
             }
 
-            IEnumerable<ResenaDTO> resenaDTOs = resenas.ObtenerPorClase(claseId);
-            return resenaDTOs.ToList();
+            IReadOnlyCollection<Resena> resenasDeLaClase = resenas.ObtenerPorClase(claseId);
+            List<ResenaDTO> resenaDTOs = mapper.Map<List<ResenaDTO>>(resenasDeLaClase);
+            return resenaDTOs;
         }
 
         [HttpGet("{guid:Guid}", Name = "ObtenerResena")]
@@ -40,9 +43,9 @@ namespace GimnasioAPI.Controllers
                 return NotFound();
             }
 
-            ResenaDTO? resenaDTO = resenas.ObtenerPorClase(claseId).FirstOrDefault(x => x.Id == guid);
+            Resena? resena = resenas.ObtenerPorClase(claseId).FirstOrDefault(x => x.Id == guid);
 
-            if (resenaDTO is null)
+            if (resena is null)
             {
                 if (logger.IsEnabled(LogLevel.Information))
                     logger.LogInformation("No se encontro la guid {guid} al intentar buscarla.", guid);
@@ -50,6 +53,7 @@ namespace GimnasioAPI.Controllers
                 return NotFound();
             }
 
+            ResenaDTO resenaDTO = mapper.Map<ResenaDTO>(resena);
             return resenaDTO;
         }
 
@@ -66,11 +70,12 @@ namespace GimnasioAPI.Controllers
                 return NotFound();
             }
 
-            ResenaDTO resenaDTO = resenas.Crear(claseId, resenaCreacionDTO);
+            Resena resena = resenas.Crear(claseId, resenaCreacionDTO);
 
             if (logger.IsEnabled(LogLevel.Information))
-                logger.LogInformation("Se creó la reseña {guid} para la clase {claseId}.", resenaDTO.Id,claseId);
+                logger.LogInformation("Se creó la reseña {guid} para la clase {claseId}.", resena.Id, claseId);
 
+            ResenaDTO resenaDTO = mapper.Map<ResenaDTO>(resena);
             return CreatedAtRoute("ObtenerResena", new { claseId, guid = resenaDTO.Id }, resenaDTO);
         }
     }
