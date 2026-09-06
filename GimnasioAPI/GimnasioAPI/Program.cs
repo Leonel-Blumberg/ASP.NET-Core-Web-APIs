@@ -1,4 +1,6 @@
 using GimnasioAPI.Datos;
+using GimnasioAPI.Interfaces;
+using GimnasioAPI.Repositorios;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json.Converters;
 
@@ -9,6 +11,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers().AddNewtonsoftJson(opciones => opciones.SerializerSettings.Converters.Add(new StringEnumConverter()));
 
 builder.Services.AddAutoMapper(configuracion => configuracion.AddMaps(typeof(Program).Assembly));
+builder.Services.AddSingleton<IRepositorioResenas, RepositorioResenasLista>();
 
 builder.Services.AddDbContext<ApplicationDbContext>(opciones => opciones.UseSqlServer("name=DefaultConnection"));
 

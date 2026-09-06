@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using GimnasioAPI.Validaciones;
 
 namespace GimnasioAPI.DTOs.Resena
 {
@@ -10,7 +9,5 @@ namespace GimnasioAPI.DTOs.Resena
         public required string Texto { get; set; }
         [Range(0, 10)]
         public int Puntaje { get; set; }
-        [FechaNoFutura]
-        public DateTime? FechaPublicacion { get; set; }
     }
 }

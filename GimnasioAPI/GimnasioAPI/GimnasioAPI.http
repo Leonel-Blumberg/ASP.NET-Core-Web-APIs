@@ -101,12 +101,6 @@ Content-Type: application/json-patch+json
     { "op": "replace", "path": "/nombre", "value": "Pilates"}
 ]
 
-### Borrar una disciplina
-DELETE {{GimnasioAPI_HostAddress}}/api/disciplinas/1
-
-### FALLA 404 - No se encuentra la id
-DELETE {{GimnasioAPI_HostAddress}}/api/disciplinas/999
-
 ### ---------- Instructores ----------
 
 ### Crear un instructor
@@ -213,8 +207,249 @@ Content-Type: application/json
 
 ]
 
+### ---------- Clases ----------
+
+### Crear una clase
+POST {{GimnasioAPI_HostAddress}}/api/clases
+Content-Type: application/json
+
+{
+  "nombre": "Yoga suave",
+  "cupoMinimo": 5,
+  "cupoMaximo": 20,
+  "duracionMinutos": 60,
+  "activa": true,
+  "disciplinaId": 1,
+  "instructores": [
+    { "instructorId": 1, "rol": "Titular" },
+    { "instructorId": 2, "rol": "Suplente" }
+  ]
+}
+
+### Crear otra clase
+POST {{GimnasioAPI_HostAddress}}/api/clases
+Content-Type: application/json
+
+{
+  "nombre": "Boxeo",
+  "cupoMinimo": 3,
+  "cupoMaximo": 10,
+  "duracionMinutos": 60,
+  "activa": false,
+  "disciplinaId": 2,
+  "instructores": [
+    { "instructorId": 2, "rol": "Titular" },
+    { "instructorId": 1, "rol": "Suplente" }
+  ]
+}
+
+### FALLA 400 - Rechazar la petición porque la disciplina no existe
+POST {{GimnasioAPI_HostAddress}}/api/clases
+Content-Type: application/json
+
+{
+  "nombre": "Yoga suave",
+  "cupoMinimo": 5,
+  "cupoMaximo": 20,
+  "duracionMinutos": 60,
+  "activa": true,
+  "disciplinaId": 999,
+  "instructores": [
+    { "instructorId": 1, "rol": "Titular" },
+    { "instructorId": 2, "rol": "Suplente" }
+  ]
+}
+
+### FALLA 400 - Rechazar la petición porque el instructor no existe
+POST {{GimnasioAPI_HostAddress}}/api/clases
+Content-Type: application/json
+
+{
+  "nombre": "Yoga suave",
+  "cupoMinimo": 5,
+  "cupoMaximo": 20,
+  "duracionMinutos": 60,
+  "activa": true,
+  "disciplinaId": 1,
+  "instructores": [
+    { "instructorId": 999, "rol": "Titular" },
+    { "instructorId": 2, "rol": "Suplente" }
+  ]
+}
+
+### FALLA 400 - Rechazar la petición porque el instructor esta repetido
+POST {{GimnasioAPI_HostAddress}}/api/clases
+Content-Type: application/json
+
+{
+  "nombre": "Yoga suave",
+  "cupoMinimo": 5,
+  "cupoMaximo": 20,
+  "duracionMinutos": 60,
+  "activa": true,
+  "disciplinaId": 1,
+  "instructores": [
+    { "instructorId": 1, "rol": "Titular" },
+    { "instructorId": 1, "rol": "Suplente" }
+  ]
+}
+
+### FALLA 400 - Rechazar la petición porque el cupo mínimo supera al máximo
+POST {{GimnasioAPI_HostAddress}}/api/clases
+Content-Type: application/json
+
+{
+  "nombre": "Yoga suave",
+  "cupoMinimo": 20,
+  "cupoMaximo": 10,
+  "duracionMinutos": 60,
+  "activa": true,
+  "disciplinaId": 1,
+  "instructores": [
+    { "instructorId": 1, "rol": "Titular" },
+    { "instructorId": 2, "rol": "Suplente" }
+  ]
+}
+
+### FALLA 400 - Rechazar la petición porque el nombre no comienza con mayúscula
+POST {{GimnasioAPI_HostAddress}}/api/clases
+Content-Type: application/json
+
+{
+  "nombre": "yoga suave",
+  "cupoMinimo": 5,
+  "cupoMaximo": 20,
+  "duracionMinutos": 60,
+  "activa": true,
+  "disciplinaId": 1,
+  "instructores": [
+    { "instructorId": 1, "rol": "Titular" },
+    { "instructorId": 2, "rol": "Suplente" }
+  ]
+}
+
+### Leer las clases
+GET {{GimnasioAPI_HostAddress}}/api/clases
+
+### Leer las clases filtrando por id de disciplina
+GET {{GimnasioAPI_HostAddress}}/api/clases?disciplinaId=1
+
+### Leer únicamente las clases que estan activas 
+GET {{GimnasioAPI_HostAddress}}/api/clases?activa=true
+
+### Leer las clases filtrando por id de disciplina y únicamente las activas
+GET {{GimnasioAPI_HostAddress}}/api/clases?disciplinaId=1&activa=true
+
+### Leer las clases por id sin header
+GET {{GimnasioAPI_HostAddress}}/api/clases/1
+
+### Leer las clases por id con header
+GET {{GimnasioAPI_HostAddress}}/api/clases/1
+incluir-disciplina: true
+
+### FALLA 404 - No se encuentra la id
+GET {{GimnasioAPI_HostAddress}}/api/clases/999
+
+### Leer las clases por nombre
+GET {{GimnasioAPI_HostAddress}}/api/clases/Yoga
+
+### FALLA 404 - No se encuentra el nombre
+GET {{GimnasioAPI_HostAddress}}/api/clases/Natacion
+
+### Modificar una clase entera, cambiando tambien sus instructores
+PUT {{GimnasioAPI_HostAddress}}/api/clases/1
+Content-Type: application/json
+
+{
+  "nombre": "Yoga intenso",
+  "cupoMinimo": 8,
+  "cupoMaximo": 25,
+  "duracionMinutos": 90,
+  "activa": true,
+  "disciplinaId": 1,
+  "instructores": [
+    { "instructorId": 1, "rol": "Suplente" }
+  ]
+}
+
+### Leer las clases por id sin header (prueba que el RemoveRange funciona)
+GET {{GimnasioAPI_HostAddress}}/api/clases/1
+
+### FALLA 404 - No se encuentra la id
+PUT {{GimnasioAPI_HostAddress}}/api/clases/999
+Content-Type: application/json
+
+{
+  "nombre": "Yoga intenso",
+  "cupoMinimo": 8,
+  "cupoMaximo": 25,
+  "duracionMinutos": 90,
+  "activa": true,
+  "disciplinaId": 1,
+  "instructores": [
+    { "instructorId": 1, "rol": "Suplente" }
+  ]
+}
+
+### FALLA 400 - Rechazar la petición porque la disciplina no existe
+PUT {{GimnasioAPI_HostAddress}}/api/clases/1
+Content-Type: application/json
+
+{
+  "nombre": "Yoga intenso",
+  "cupoMinimo": 8,
+  "cupoMaximo": 25,
+  "duracionMinutos": 90,
+  "activa": true,
+  "disciplinaId": 999,
+  "instructores": [
+    { "instructorId": 1, "rol": "Suplente" }
+  ]
+}
+
+### Modificar una clase parcialmente
+PATCH {{GimnasioAPI_HostAddress}}/api/clases/1
+Content-Type: application/json-patch+json
+
+[
+    { "op": "replace", "path": "/activa", "value": false }
+]
+
+### FALLA 400 - Rechazar la petición porque la disciplina no existe
+PATCH {{GimnasioAPI_HostAddress}}/api/clases/1
+Content-Type: application/json-patch+json
+
+[
+    { "op": "replace", "path": "/disciplinaId", "value": 999}
+]
+
+### FALLA 400 - Rechazar la petición porque el cupo mínimo supera al máximo
+PATCH {{GimnasioAPI_HostAddress}}/api/clases/1
+Content-Type: application/json-patch+json
+
+[
+    { "op": "replace", "path": "/cupoMinimo", "value": 100}
+]
+
+### ---------- Borrados ----------
+
+### FALLA 400 - No se puede borrar una disciplina que tiene clases asociadas
+DELETE {{GimnasioAPI_HostAddress}}/api/disciplinas/1
+
+### FALLA 404 - No se encuentra la id
+DELETE {{GimnasioAPI_HostAddress}}/api/disciplinas/999
+
+### Borrar una clase
+DELETE {{GimnasioAPI_HostAddress}}/api/clases/1
+
+### FALLA 404 - No se encuentra la id
+DELETE {{GimnasioAPI_HostAddress}}/api/clases/999
+
 ### Borrar un instructor
-DELETE {{GimnasioAPI_HostAddress}}/api/instructores/2
+DELETE {{GimnasioAPI_HostAddress}}/api/instructores/1
 
 ### FALLA 404 - No se encuentra la id
 DELETE {{GimnasioAPI_HostAddress}}/api/instructores/999
+
+### Borrar una disciplina
+DELETE {{GimnasioAPI_HostAddress}}/api/disciplinas/1
